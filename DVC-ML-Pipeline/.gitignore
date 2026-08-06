@@ -1,2 +1,4 @@
 /model.pkl
 /metrics.json
+data/
+mlruns/

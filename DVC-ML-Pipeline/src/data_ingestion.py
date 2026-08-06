@@ -1,30 +1,38 @@
 """
 Stage 1: Data Ingestion
 ------------------------
-Loads the scikit-learn Breast Cancer Wisconsin dataset (binary classification:
-malignant vs benign tumor) and dumps it as a raw CSV file.
-
-Output:
-    data/raw/data.csv
+Loads the Boston Housing dataset from OpenML
+and saves it as data/raw/data.csv
 """
 
 import os
 import pandas as pd
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import fetch_openml
 
 
-def load_data() -> pd.DataFrame:
-    """Load the sklearn breast cancer dataset into a DataFrame."""
-    bunch = load_breast_cancer(as_frame=True)
-    df = bunch.frame  #includes feature columns + 'target'
+def load_data():
+    X, y = fetch_openml(
+        name="boston",
+        version=1,
+        as_frame=True,
+        return_X_y=True,
+    )
+
+    df = X.copy()
+    df["target"] = y.astype(float)
+
     return df
 
 
-def save_raw_data(df: pd.DataFrame, out_dir: str = "data/raw") -> None:
+def save_raw_data(df, out_dir="data/raw"):
     os.makedirs(out_dir, exist_ok=True)
+
     out_path = os.path.join(out_dir, "data.csv")
+
     df.to_csv(out_path, index=False)
-    print(f"[data_ingestion] Saved raw data -> {out_path} (shape={df.shape})")
+
+    print(f"Saved raw dataset -> {out_path}")
+    print(df.head())
 
 
 def main():
