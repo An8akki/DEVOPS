@@ -59,8 +59,8 @@ stages:
       nfiles: 3
     - path: src/model_building.py
       hash: md5
-      md5: 57db315e0ce4a26a980c713beb438825
-      size: 4896
+      md5: 8b8f50fe808359756c850d956c3796b9
+      size: 4806
     outs:
     - path: model.pkl
       hash: md5
@@ -75,8 +75,8 @@ stages:
       size: 140344
     - path: src/model_evaluation.py
       hash: md5
-      md5: 952c2c36db286cee9dfce1165c739d00
-      size: 3108
+      md5: 9f8d80309baba6d452e0ce53a21a77e1
+      size: 3018
     outs:
     - path: metrics.json
       hash: md5
