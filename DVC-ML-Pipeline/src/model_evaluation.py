@@ -1,19 +1,22 @@
 """
-Stage 5: Model Evaluation
--------------------------
-Loads the trained model and test data,
-evaluates the regression model,
-logs metrics to MLflow,
+Stage 5 : Model Evaluation
+
+Loads the best trained model,
+evaluates it on the test dataset,
+logs metrics to MLflow (DagsHub),
 and saves metrics.json.
 
-Input:
-    model.pkl
-    data/features/test.csv
+Input
+-----
+model.pkl
+data/features/test.csv
 
-Output:
-    metrics.json
+Output
+------
+metrics.json
 """
 
+import os
 import json
 import joblib
 import pandas as pd
@@ -25,45 +28,79 @@ from sklearn.metrics import (
     r2_score,
 )
 
+# ==========================================================
+# MLflow + DagsHub Configuration
+# ==========================================================
+from dotenv import load_dotenv
+
+load_dotenv()
+
+mlflow.set_tracking_uri(
+    "https://dagshub.com/An8akki/DVC-ML-Pipeline.mlflow"
+)
+
+mlflow.set_experiment("Boston Housing Regression")
+
+
+# ==========================================================
+# Utility Functions
+# ==========================================================
 
 def load_model(path="model.pkl"):
     model = joblib.load(path)
-    print("[model_evaluation] Model loaded")
+    print("[INFO] Loaded best model.")
     return model
 
 
 def load_test_data(path="data/features/test.csv"):
     df = pd.read_csv(path)
-    print(f"[model_evaluation] Loaded test data (shape={df.shape})")
+    print(f"[INFO] Test Shape : {df.shape}")
     return df
 
 
-def evaluate(model, df):
-    X_test = df.drop(columns=["target"])
-    y_test = df["target"]
+def evaluate(model, X_test, y_test):
 
     predictions = model.predict(X_test)
 
-    rmse = mean_squared_error(y_test, predictions) ** 0.5
-    mae = mean_absolute_error(y_test, predictions)
-    r2 = r2_score(y_test, predictions)
+    rmse = mean_squared_error(
+        y_test,
+        predictions
+    ) ** 0.5
 
-    metrics = {
-        "rmse": float(rmse),
-        "mae": float(mae),
-        "r2_score": float(r2)
+    mae = mean_absolute_error(
+        y_test,
+        predictions
+    )
+
+    r2 = r2_score(
+        y_test,
+        predictions
+    )
+
+    return {
+
+        "RMSE": float(rmse),
+        "MAE": float(mae),
+        "R2": float(r2)
+
     }
-
-    return metrics
 
 
 def save_metrics(metrics, path="metrics.json"):
+
     with open(path, "w") as f:
-        json.dump(metrics, f, indent=4)
+        json.dump(
+            metrics,
+            f,
+            indent=4
+        )
 
-    print("[model_evaluation] Metrics saved -> metrics.json")
-    print(json.dumps(metrics, indent=4))
+    print(f"\nMetrics saved -> {path}")
 
+
+# ==========================================================
+# Main
+# ==========================================================
 
 def main():
 
@@ -71,21 +108,53 @@ def main():
 
     df = load_test_data()
 
-    metrics = evaluate(model, df)
+    X_test = df.drop(columns=["target"])
+    y_test = df["target"]
 
-    # Save metrics FIRST
+    metrics = evaluate(
+        model,
+        X_test,
+        y_test
+    )
+
     save_metrics(metrics)
 
-    # Log to MLflow
-    mlflow.set_experiment("Boston Housing Regression")
+    with mlflow.start_run(run_name="Final Evaluation"):
 
-    with mlflow.start_run():
+        # -----------------------
+        # Log Metrics
+        # -----------------------
 
-        mlflow.log_metric("RMSE", metrics["rmse"])
-        mlflow.log_metric("MAE", metrics["mae"])
-        mlflow.log_metric("R2_Score", metrics["r2_score"])
+        mlflow.log_metric(
+            "RMSE",
+            metrics["RMSE"]
+        )
+
+        mlflow.log_metric(
+            "MAE",
+            metrics["MAE"]
+        )
+
+        mlflow.log_metric(
+            "R2",
+            metrics["R2"]
+        )
+
+        # -----------------------
+        # Upload metrics.json
+        # -----------------------
 
         mlflow.log_artifact("metrics.json")
+
+    print("\n===================================")
+    print("FINAL MODEL PERFORMANCE")
+    print("===================================")
+
+    print(f"RMSE : {metrics['RMSE']:.4f}")
+    print(f"MAE  : {metrics['MAE']:.4f}")
+    print(f"R²   : {metrics['R2']:.4f}")
+
+    print("===================================")
 
 
 if __name__ == "__main__":

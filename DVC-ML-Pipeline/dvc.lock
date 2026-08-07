@@ -59,26 +59,26 @@ stages:
       nfiles: 3
     - path: src/model_building.py
       hash: md5
-      md5: 12b6895d6ec6f7c635e61e9f03e1aa95
-      size: 1822
+      md5: 57db315e0ce4a26a980c713beb438825
+      size: 4896
     outs:
     - path: model.pkl
       hash: md5
-      md5: df496fa7c9ecafd6a21612ad451feeb0
-      size: 1316161
+      md5: bef3381dc5a335929f27ca5fee91f0ed
+      size: 140344
   model_evaluation:
     cmd: python src/model_evaluation.py
     deps:
     - path: model.pkl
       hash: md5
-      md5: df496fa7c9ecafd6a21612ad451feeb0
-      size: 1316161
+      md5: bef3381dc5a335929f27ca5fee91f0ed
+      size: 140344
     - path: src/model_evaluation.py
       hash: md5
-      md5: 313895ef888eca58028d7c3f383ab011
-      size: 1844
+      md5: 952c2c36db286cee9dfce1165c739d00
+      size: 3108
     outs:
     - path: metrics.json
       hash: md5
-      md5: 4bb71a3af88775a6aba4f79ea5a2cd5b
-      size: 100
+      md5: 623eae98483b0ec00b5452d6ff9ab8c1
+      size: 94

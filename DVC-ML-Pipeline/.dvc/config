@@ -2,6 +2,3 @@
     remote = origin
 ['remote "origin"']
     url = https://dagshub.com/An8akki/DVC-ML-Pipeline.dvc
-    auth = basic
-    user = An8akki
-    password = d9ec27c6a3a1569f4e5eb26ef82e4ecb9582300c

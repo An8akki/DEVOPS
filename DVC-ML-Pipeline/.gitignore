@@ -1,4 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual Environment
+venv/
+
+# Environment Variables
+.env
+
+# MLflow
+mlruns/
+mlflow.db
+
+# DVC Cache
+.dvc/cache/
+
+# Model
+model.pkl
+
+# Metrics
+metrics.json
+
+# Dataset
+data/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store.env
 /model.pkl
 /metrics.json
 data/
-mlruns/
