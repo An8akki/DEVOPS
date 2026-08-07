@@ -74,7 +74,9 @@ jobs:
         with:
           name: metrics
           path: DVC-ML-Pipeline/metrics.json
-
+env:
+  MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+  MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
   deploy_to_huggingface:
 
     needs: train_and_evaluate
